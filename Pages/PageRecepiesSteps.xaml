@@ -1,0 +1,42 @@
+<Page x:Class="RecipeBook.Pages.PageRecepiesSteps"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="PageRecepiesSteps">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <ListView x:Name="LvSteps" Grid.Row="0">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border Style="{StaticResource CardBorderStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="220"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding StepNumber}" VerticalAlignment="Center" FontWeight="Bold"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Description}" TextWrapping="Wrap"/>
+                            <Image Grid.Column="2" Source="{Binding ImagePath}" Height="60"/>
+                            <StackPanel Grid.Column="3" Orientation="Horizontal">
+                                <Button Content="↑" Tag="{Binding RecipeStepId}" Click="MoveUp_OnClick"/>
+                                <Button Content="↓" Tag="{Binding RecipeStepId}" Click="MoveDown_OnClick"/>
+                                <Button Content="Редактировать" Tag="{Binding RecipeStepId}" Click="Edit_OnClick"/>
+                                <Button Content="Удалить" Tag="{Binding RecipeStepId}" Click="Delete_OnClick"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,0">
+            <Button Content="Добавить шаг" Click="Add_OnClick"/>
+            <Button Content="Назад" Click="Back_OnClick"/>
+        </StackPanel>
+    </Grid>
+</Page>

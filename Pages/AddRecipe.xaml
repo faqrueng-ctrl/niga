@@ -1,0 +1,55 @@
+<Page x:Class="RecipeBook.Pages.AddRecipe"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="AddRecipe">
+    <Grid Margin="12">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.3*"/>
+            <ColumnDefinition Width="1.8*"/>
+            <ColumnDefinition Width="1.2*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Style="{StaticResource CardBorderStyle}">
+            <StackPanel>
+                <Image x:Name="MainImage" Height="250" Stretch="Uniform"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,0">
+                    <Button Content="Предыдущее" Click="PrevImage_OnClick"/>
+                    <Button Content="Следующее" Click="NextImage_OnClick"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Column="1" Style="{StaticResource CardBorderStyle}">
+            <StackPanel>
+                <TextBlock Text="Название" Margin="6,8,6,0"/>
+                <TextBox x:Name="TbTitle"/>
+                <TextBlock Text="Описание" Margin="6,8,6,0"/>
+                <TextBox x:Name="TbDescription" Height="110" AcceptsReturn="True" TextWrapping="Wrap"/>
+                <TextBlock Text="Время приготовления (мин.)" Margin="6,8,6,0"/>
+                <TextBox x:Name="TbTime"/>
+                <TextBlock Text="Категория" Margin="6,8,6,0"/>
+                <ComboBox x:Name="CbCategory" DisplayMemberPath="Name" SelectedValuePath="CategoryId"/>
+                <TextBlock Text="Автор" Margin="6,8,6,0"/>
+                <ComboBox x:Name="CbAuthor" DisplayMemberPath="UserName" SelectedValuePath="AuthorId"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                    <Button Content="Сохранить" Click="Save_OnClick"/>
+                    <Button Content="Перейти к шагам" Click="GoSteps_OnClick"/>
+                    <Button Content="Отмена" Click="Cancel_OnClick"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Column="2" Style="{StaticResource CardBorderStyle}">
+            <DockPanel>
+                <Button Content="Загрузить изображение" DockPanel.Dock="Bottom" Click="UploadImage_OnClick"/>
+                <ListBox x:Name="LbImages" SelectionChanged="LbImages_OnSelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding}" Height="80" Stretch="UniformToFill" Margin="0,0,0,6"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </Border>
+    </Grid>
+</Page>
