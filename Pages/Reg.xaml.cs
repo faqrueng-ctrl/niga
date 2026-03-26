@@ -30,16 +30,27 @@ public partial class Reg : Page
             }
 
             var birthDate = DpBirthDate.SelectedDate!.Value.Date;
-            var age = DateTime.Today.Year - birthDate.Year - (birthDate > DateTime.Today.AddYears(- (DateTime.Today.Year - birthDate.Year)) ? 1 : 0);
-            if (birthDate > DateTime.Today || age < 14)
+            if (birthDate > DateTime.Today)
             {
-                MessageBox.Show("Некорректная дата рождения. Минимальный возраст — 14 лет.");
+                MessageBox.Show("Дата рождения не может быть в будущем.");
                 return;
             }
 
-            if (!int.TryParse(TbExp.Text, out var exp) || exp < 0)
+            var age = DateTime.Today.Year - birthDate.Year;
+            if (birthDate.Date > DateTime.Today.AddYears(-age))
             {
-                MessageBox.Show("Стаж должен быть неотрицательным числом.");
+                age--;
+            }
+
+            if (age < 14)
+            {
+                MessageBox.Show("Минимальный возраст для регистрации — 14 лет.");
+                return;
+            }
+
+            if (!int.TryParse(TbExp.Text, out var exp) || exp <= 0)
+            {
+                MessageBox.Show("Стаж должен быть положительным целым числом.");
                 return;
             }
 
