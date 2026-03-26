@@ -1,0 +1,62 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Color x:Key="PrimaryColor">#FF5B8DEF</Color>
+    <Color x:Key="SecondaryColor">#FFECF2FF</Color>
+    <Color x:Key="TextColor">#FF253047</Color>
+
+    <Style TargetType="Page">
+        <Setter Property="Background" Value="#FFF5F7FB"/>
+    </Style>
+
+    <Style TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Padding" Value="12,6"/>
+        <Setter Property="Margin" Value="6"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border CornerRadius="10" Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="TextBox">
+        <Setter Property="Margin" Value="6"/>
+        <Setter Property="Padding" Value="8"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="BorderBrush" Value="#FFD2D9E6"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+
+    <Style TargetType="PasswordBox">
+        <Setter Property="Margin" Value="6"/>
+        <Setter Property="Padding" Value="8"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="BorderBrush" Value="#FFD2D9E6"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+
+    <Style TargetType="ComboBox">
+        <Setter Property="Margin" Value="6"/>
+        <Setter Property="Padding" Value="8"/>
+        <Setter Property="Background" Value="White"/>
+    </Style>
+
+    <Style x:Key="CardBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="12"/>
+        <Setter Property="Margin" Value="8"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="12" Opacity="0.15"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
