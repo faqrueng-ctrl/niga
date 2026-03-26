@@ -39,6 +39,7 @@ public partial class AddRecipe : Page
                 {
                     CbAuthor.SelectedValue = AppConnect.CurrentAuthor.AuthorId;
                 }
+
                 return;
             }
 
@@ -50,7 +51,7 @@ public partial class AddRecipe : Page
             CbAuthor.SelectedValue = _recipe.AuthorId;
 
             _images.Clear();
-            _images.AddRange(_recipe.Images.Select(i => i.ImagePath));
+            _images.AddRange(_recipe.Images.OrderBy(i => i.RecipeImageId).Select(i => i.ImagePath));
             RefreshImageViews();
         }
         catch (Exception ex)
@@ -71,7 +72,26 @@ public partial class AddRecipe : Page
         }
 
         _imageIndex = Math.Clamp(_imageIndex, 0, _images.Count - 1);
-        MainImage.Source = new BitmapImage(new Uri(_images[_imageIndex], UriKind.RelativeOrAbsolute));
+        MainImage.Source = CreateBitmap(_images[_imageIndex]);
+    }
+
+    private static BitmapImage? CreateBitmap(string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return null;
+        }
+
+        var absolutePath = Path.IsPathRooted(path)
+            ? path
+            : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+
+        if (!File.Exists(absolutePath))
+        {
+            return null;
+        }
+
+        return new BitmapImage(new Uri(absolutePath, UriKind.Absolute));
     }
 
     private async void Save_OnClick(object sender, RoutedEventArgs e)
@@ -90,7 +110,8 @@ public partial class AddRecipe : Page
                 return;
             }
 
-            if (_recipeId == 0)
+            var isNewRecipe = _recipeId == 0;
+            if (isNewRecipe)
             {
                 _recipe = new Recipe();
                 AppConnect.Model.Recipes.Add(_recipe);
@@ -104,12 +125,13 @@ public partial class AddRecipe : Page
 
             await AppConnect.Model.SaveChangesAsync();
 
-            if (_recipeId == 0 && _images.Count > 0)
+            if (isNewRecipe && _images.Count > 0)
             {
                 foreach (var path in _images)
                 {
                     AppConnect.Model.RecipeImages.Add(new RecipeImage { RecipeId = _recipe.RecipeId, ImagePath = path });
                 }
+
                 await AppConnect.Model.SaveChangesAsync();
             }
 
@@ -129,6 +151,7 @@ public partial class AddRecipe : Page
             MessageBox.Show("Сначала сохраните рецепт.");
             return;
         }
+
         AppFrame.MainFrame.Navigate(new PageRecepiesSteps(id));
     }
 
@@ -139,22 +162,27 @@ public partial class AddRecipe : Page
         try
         {
             var ofd = new OpenFileDialog { Filter = "Image files|*.png;*.jpg;*.jpeg;*.bmp" };
-            if (ofd.ShowDialog() != true) return;
+            if (ofd.ShowDialog() != true)
+            {
+                return;
+            }
 
-            var imageDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Images");
+            var resourcesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources");
+            var imageDir = Path.Combine(resourcesPath, "Images");
             Directory.CreateDirectory(imageDir);
 
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(ofd.FileName)}";
-            var target = Path.Combine(imageDir, fileName);
-            File.Copy(ofd.FileName, target, true);
+            var absolutePath = Path.Combine(imageDir, fileName);
+            File.Copy(ofd.FileName, absolutePath, true);
 
-            _images.Add(target);
+            var relativePath = Path.Combine("Resources", "Images", fileName);
+            _images.Add(relativePath);
             _imageIndex = _images.Count - 1;
             RefreshImageViews();
 
             if (_recipeId != 0)
             {
-                AppConnect.Model.RecipeImages.Add(new RecipeImage { RecipeId = _recipeId, ImagePath = target });
+                AppConnect.Model.RecipeImages.Add(new RecipeImage { RecipeId = _recipeId, ImagePath = relativePath });
                 AppConnect.Model.SaveChanges();
             }
         }
@@ -166,21 +194,33 @@ public partial class AddRecipe : Page
 
     private void PrevImage_OnClick(object sender, RoutedEventArgs e)
     {
-        if (_images.Count == 0) return;
+        if (_images.Count == 0)
+        {
+            return;
+        }
+
         _imageIndex = (_imageIndex - 1 + _images.Count) % _images.Count;
         RefreshImageViews();
     }
 
     private void NextImage_OnClick(object sender, RoutedEventArgs e)
     {
-        if (_images.Count == 0) return;
+        if (_images.Count == 0)
+        {
+            return;
+        }
+
         _imageIndex = (_imageIndex + 1) % _images.Count;
         RefreshImageViews();
     }
 
     private void LbImages_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (LbImages.SelectedIndex < 0) return;
+        if (LbImages.SelectedIndex < 0)
+        {
+            return;
+        }
+
         _imageIndex = LbImages.SelectedIndex;
         RefreshImageViews();
     }
